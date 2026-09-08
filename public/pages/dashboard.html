@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - StudyHub.AI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+        }
+        .navbar {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-brand { font-size: 1.5rem; font-weight: 700; color: #6366f1; text-decoration: none; }
+        .nav-brand span { color: #06b6d4; }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { color: #64748b; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { color: #6366f1; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .welcome { margin-bottom: 2rem; }
+        .welcome h1 { font-size: 2rem; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .stat-icon { font-size: 2.5rem; }
+        .stat-info h3 { font-size: 1.75rem; color: #6366f1; }
+        .stat-info p { color: #64748b; font-size: 0.9rem; }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .card h2 { margin-bottom: 1rem; }
+        .suggestion {
+            background: #f1f5f9;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 0.75rem;
+            border-left: 4px solid #6366f1;
+        }
+        @media (max-width: 768px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" class="nav-brand">StudyHub<span>.AI</span></a>
+        <div class="nav-links">
+            <a href="#">Dashboard</a>
+            <a href="#">AI Tutor</a>
+            <a href="#" id="logoutBtn">🚪 Logout</a>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="welcome">
+            <h1>👋 Welcome back, Student!</h1>
+            <p>You have 3 assignments due this week</p>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📚</div>
+                <div class="stat-info">
+                    <h3>5</h3>
+                    <p>Active Courses</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📝</div>
+                <div class="stat-info">
+                    <h3>3</h3>
+                    <p>Pending Assignments</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏰</div>
+                <div class="stat-info">
+                    <h3>12hrs</h3>
+                    <p>Study Time</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-info">
+                    <h3>85%</h3>
+                    <p>Course Progress</p>
+                </div>
+            </div>
+        </div>
+        <div class="dashboard-grid">
+            <div class="card">
+                <h2>📋 Recent Activity</h2>
+                <p>• Completed AI quiz: Calculus Review <span style="color:#64748b;float:right;">2 hours ago</span></p>
+                <p>• Uploaded notes: Physics Chapter 5 <span style="color:#64748b;float:right;">Yesterday</span></p>
+                <p>• Created study plan for finals <span style="color:#64748b;float:right;">2 days ago</span></p>
+            </div>
+            <div class="card">
+                <h2>💡 AI Suggestions</h2>
+                <div class="suggestion">📚 Review flashcards for upcoming exam</div>
+                <div class="suggestion">⏰ Your optimal study time is 8 AM</div>
+                <div class="suggestion">📝 Complete 2 more assignments this week</div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '/';
+        });
+    </script>
+</body>
+</html>

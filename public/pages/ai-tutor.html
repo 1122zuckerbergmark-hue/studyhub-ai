@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tutor - StudyHub.AI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+        }
+        .navbar {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-brand { font-size: 1.5rem; font-weight: 700; color: #6366f1; text-decoration: none; }
+        .nav-brand span { color: #06b6d4; }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { color: #64748b; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { color: #6366f1; }
+        .container { max-width: 800px; margin: 0 auto; padding: 2rem; }
+        .ai-header { text-align: center; padding: 2rem 0; }
+        .ai-header h1 { 
+            font-size: 2.5rem; 
+            background: linear-gradient(135deg, #6366f1, #8b5cf6); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .chat-box {
+            background: white;
+            border-radius: 12px;
+            height: 400px;
+            padding: 1.5rem;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 1rem;
+        }
+        .message {
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .message.user { background: #6366f1; color: white; margin-left: auto; }
+        .message.ai { background: #f1f5f9; color: #1e293b; }
+        .message.error { background: #fee2e2; color: #991b1b; }
+        .chat-input {
+            display: flex;
+            gap: 1rem;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+        }
+        .chat-input input:focus { outline: none; border-color: #6366f1; }
+        .chat-input button {
+            padding: 0.75rem 1.5rem;
+            background: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .chat-input button:hover { background: #4f46e5; }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .feature-btn {
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .feature-btn:hover { border-color: #6366f1; transform: translateY(-2px); }
+        .feature-btn .icon { font-size: 2rem; display: block; }
+        .feature-btn .label { font-size: 0.85rem; color: #64748b; margin-top: 0.25rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/dashboard" class="nav-brand">StudyHub<span>.AI</span></a>
+        <div class="nav-links">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/ai-tutor">AI Tutor</a>
+            <a href="#" id="logoutBtn">🚪 Logout</a>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="ai-header">
+            <h1>🤖 AI Tutor</h1>
+            <p>Your personal AI study assistant</p>
+        </div>
+        <div class="chat-box" id="chatBox">
+            <div class="message ai">Hello! I'm your AI tutor. Ask me anything about your studies! 🎓</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Ask a question...">
+            <button id="sendBtn">Send</button>
+        </div>
+        <div class="features-grid">
+            <div class="feature-btn" onclick="askQuestion('Generate 5 flashcards about photosynthesis')">
+                <span class="icon">📚</span>
+                <div class="label">Flashcards</div>
+            </div>
+            <div class="feature-btn" onclick="askQuestion('Give me a practice quiz on calculus')">
+                <span class="icon">📝</span>
+                <div class="label">Practice Quiz</div>
+            </div>
+            <div class="feature-btn" onclick="askQuestion('Summarize the key points of World War 2')">
+                <span class="icon">✍️</span>
+                <div class="label">Summarize</div>
+            </div>
+            <div class="feature-btn" onclick="askQuestion('Create a study plan for my final exams')">
+                <span class="icon">📅</span>
+                <div class="label">Study Plan</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById('chatBox');
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+
+        async function sendMessage() {
+            const question = chatInput.value.trim();
+            if (!question) return;
+
+            // Add user message
+            chatBox.innerHTML += `<div class="message user">${question}</div>`;
+            chatInput.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Show typing indicator
+            chatBox.innerHTML += `<div class="message ai" id="typing">🤔 Thinking...</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                // NO AUTH HEADER!
+                const response = await fetch('/api/ai-tutor/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ question })
+                });
+
+                const data = await response.json();
+
+                // Remove typing indicator
+                const typing = document.getElementById('typing');
+                if (typing) typing.remove();
+
+                if (response.ok) {
+                    chatBox.innerHTML += `<div class="message ai">${data.answer}</div>`;
+                } else {
+                    chatBox.innerHTML += `<div class="message error">❌ ${data.message || 'Something went wrong'}</div>`;
+                }
+            } catch (error) {
+                const typing = document.getElementById('typing');
+                if (typing) typing.remove();
+                chatBox.innerHTML += `<div class="message error">❌ Network error. Please try again.</div>`;
+            }
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Feature buttons
+        window.askQuestion = function(question) {
+            chatInput.value = question;
+            sendMessage();
+        };
+
+        sendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '/';
+        });
+    </script>
+</body>
+</html>
